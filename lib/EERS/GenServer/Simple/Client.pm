@@ -28,7 +28,7 @@ sub create_report_request {
      defined $report_format &&        
      defined $report_type   &&
      defined $report_spec)
-     || confess "You must have a session, report_format, report_type and report spec defined";
+        || confess "You must have a session, report_format, report_type and report spec defined";
     
     my $schema = $self->schema;    
     
@@ -62,12 +62,12 @@ sub get_all_report_requests_for_user {
     (defined $session)
         || confess "You must have a session defined";
     
-    return $self->schema->resultset("ReportRequest")->search({
+    return $self->schema->resultset("ReportRequest")->get_undeleted_requests_for(
         user_id => $session->getUserID,
         (defined $report_format 
             ? (report_format => $report_format)
             : ()),
-    });    
+    );    
 }
 
 no Moose;

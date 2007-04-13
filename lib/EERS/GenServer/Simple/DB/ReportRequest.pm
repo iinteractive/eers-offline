@@ -17,6 +17,7 @@ use constant SUBMITTED => 'submitted';
 use constant PENDING   => 'pending';
 use constant COMPLETED => 'completed';
 use constant ERROR     => 'error';
+use constant DELETED   => 'deleted';
 
 __PACKAGE__->load_components(qw/PK::Auto InflateColumn::DateTime InflateColumn Core/);
 __PACKAGE__->table('tbl_report_requests');
@@ -92,10 +93,17 @@ sub set_status_to_error {
     $self->job_completed(DateTime->now);
 }
 
+sub set_status_to_deleted { 
+    my $self = shift; 
+    $self->status(DELETED);
+    $self->job_completed(DateTime->now);
+}
+
 sub is_submitted { (shift)->status eq any(SUBMITTED, COMPLETED, PENDING, ERROR) }
 sub is_pending   { (shift)->status eq PENDING }
 sub is_completed { (shift)->status eq any(COMPLETED, ERROR) }
 sub has_error    { (shift)->status eq ERROR }
+sub is_deleted   { (shift)->status eq DELETED }
 
 package EERS::GenServer::Simple::DB::ReportRequest::ResultSet;
 
@@ -120,6 +128,14 @@ sub get_first_submitted_request {
     # do this, but this should work for 
     # now. - SL
     $requests->next;
+}
+
+sub get_undeleted_requests_for {
+    my ($self, %params) = @_;    
+    my $requests = $self->search({ 
+        status => { '!=' => EERS::GenServer::Simple::DB::ReportRequest->DELETED },
+        %params,
+    });    
 }
 
 1;

@@ -17,7 +17,7 @@ CREATE TABLE tbl_report_requests (
     job_completed     DATETIME, -- timestamp of when the request has been fufilled
     
     -- Status info
-    status VARCHAR(20), -- {submitted, pending, completed, error, n/a}               
+    status VARCHAR(20), -- {submitted, pending, completed, error, deleted, n/a}               
     
     -- Misc.
     additional_metadata TEXT, -- misc crap which might be applicable
