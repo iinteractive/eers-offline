@@ -6,7 +6,7 @@ use Data::UUID;
 
 our $VERSION = '0.01';
 
-extends 'EERS::GenServer::Simple';
+with 'EERS::GenServer::Simple::WithSchema';
 
 has 'transporter' => (
     is        => 'rw',

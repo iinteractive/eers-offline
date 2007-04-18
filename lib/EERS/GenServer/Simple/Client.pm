@@ -5,7 +5,7 @@ use MooseX::Params::Validate;
 
 our $VERSION = '0.01';
 
-extends 'EERS::GenServer::Simple';
+with 'EERS::GenServer::Simple::WithSchema';
 
 ## Methods
 
