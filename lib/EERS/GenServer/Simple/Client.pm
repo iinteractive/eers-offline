@@ -1,6 +1,7 @@
 
 package EERS::GenServer::Simple::Client;
 use Moose;
+use MooseX::Params::Validate;
 
 our $VERSION = '0.01';
 
@@ -10,38 +11,26 @@ extends 'EERS::GenServer::Simple';
 
 sub create_report_request {
     my $self   = shift;
-    my %params = @_;
-    
-    my ($session, 
-        $report_format, 
-        $report_type, 
-        $report_spec, 
-        $additional_metadata) = @params{qw[
-        session 
-        report_format 
-        report_type 
-        report_spec 
-        additional_metadata
-    ]};
-    
-    (defined $session       &&
-     defined $report_format &&        
-     defined $report_type   &&
-     defined $report_spec)
-        || confess "You must have a session, report_format, report_type and report spec defined";
+    my %params = validate(\@_,
+        session             => { isa => 'EERS::Entities::Session' },
+        report_format       => { isa => 'Str' }, # pdf, excel, etc ...
+        report_type         => { isa => 'Str' }, # usually a class name of some kind ...
+        report_spec         => { isa => 'Str' }, # the serialized filter ...
+        additional_metadata => { isa => 'Str', optional => 1 },
+    );
     
     my $schema = $self->schema;    
     
     my $r;
     $schema->txn_do(sub {
         $r = $schema->resultset("ReportRequest")->new({
-            user_id           => $session->getUserID,
-            session_id        => $session->getSessionId,
-            report_format     => $report_format,
-            report_type       => $report_type,
-            report_spec       => $report_spec,    
-            (defined $additional_metadata
-                ? (additional_metadata => $additional_metadata)
+            user_id           => $params{session}->getUserID,
+            session_id        => $params{session}->getSessionId,
+            report_format     => $params{report_format},
+            report_type       => $params{report_type},
+            report_spec       => $params{report_spec},    
+            (exists $params{additional_metadata}
+                ? (additional_metadata => $params{additional_metadata})
                 : ())                    
         });
         $r->set_status_to_submitted;
@@ -53,19 +42,15 @@ sub create_report_request {
 
 sub get_all_report_requests_for_user {
     my $self   = shift;
-    my %params = @_;
-    
-    my ($session, $report_format) = @params{qw[
-        session report_format
-    ]};
-    
-    (defined $session)
-        || confess "You must have a session defined";
+    my %params = validate(\@_,
+        session       => { isa => 'EERS::Entities::Session' },
+        report_format => { isa => 'Str', optional => 1 }, # pdf, excel, etc ...
+    );
     
     return $self->schema->resultset("ReportRequest")->get_undeleted_requests_for(
-        user_id => $session->getUserID,
-        (defined $report_format 
-            ? (report_format => $report_format)
+        user_id => $params{session}->getUserID,
+        (exists $params{report_format} 
+            ? (report_format => $params{report_format})
             : ()),
     );    
 }

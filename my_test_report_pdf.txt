@@ -1,4 +1,0 @@
-Got a report request for deadbeef
-of report type TestReport
-and report format is PDF
-and report spec is 2006@c@org:1|2|3

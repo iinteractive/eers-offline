@@ -28,6 +28,7 @@ my $MOCK_USER_ID    = 10;
 my $MOCK_FILTER     = '2006@c@org:1|2|3';
 
 my $session = Test::MockObject->new;
+$session->set_isa('EERS::Entities::Session');
 $session->mock('getSessionId' => sub { $MOCK_SESSION_ID });
 $session->mock('getUserID'    => sub { $MOCK_USER_ID    });
 
