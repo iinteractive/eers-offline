@@ -1,11 +1,11 @@
 
-package EERS::GenServer::Simple::Transporter;
+package EERS::Offline::Transporter;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 
 our $VERSION = '0.01';
 
-subtype 'EERS::GenServer::Simple::DirectoryType'
+subtype 'EERS::Offline::DirectoryType'
     => as 'Str'
     => where { -d $_ };
 
@@ -17,13 +17,13 @@ has 'error' => (
 
 has 'source_dir_path' => (
     is       => 'rw',
-    isa      => 'EERS::GenServer::Simple::DirectoryType',
+    isa      => 'EERS::Offline::DirectoryType',
     required => 1,
 );
 
 has 'destination_dir_path' => (
     is       => 'rw',
-    isa      => 'EERS::GenServer::Simple::DirectoryType',    
+    isa      => 'EERS::Offline::DirectoryType',    
     required => 1,
 );
 

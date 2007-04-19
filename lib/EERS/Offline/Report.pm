@@ -1,5 +1,5 @@
 
-package EERS::GenServer::Simple::Report;
+package EERS::Offline::Report;
 use Moose::Role;
 
 our $VERSION = '0.01';

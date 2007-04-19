@@ -6,5 +6,5 @@ use warnings;
 use Test::More no_plan => 1;
 
 BEGIN {
-    use_ok('EERS::GenServer::Simple');
+    use_ok('EERS::Offline');
 }

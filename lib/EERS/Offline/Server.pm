@@ -1,22 +1,22 @@
 
-package EERS::GenServer::Simple::Server;
+package EERS::Offline::Server;
 use Moose;
 
 use Data::UUID;
 
 our $VERSION = '0.01';
 
-with 'EERS::GenServer::Simple::WithSchema';
+with 'EERS::Offline::WithSchema';
 
 has 'transporter' => (
     is        => 'rw',
-    does      => 'EERS::GenServer::Simple::Transporter',
+    does      => 'EERS::Offline::Transporter',
     predicate => 'has_transporter',
 );
 
 has 'logger' => (
     is  => 'ro',
-    isa => 'EERS::GenServer::Simple::Logger',
+    isa => 'EERS::Offline::Logger',
 );
 
 # NOTE:
@@ -117,8 +117,8 @@ sub _run {
         return;        
     }
     
-    unless ($builder_class->does('EERS::GenServer::Simple::Report')) {
-        $self->log("The builder class ($builder_class) does not implement EERS::GenServer::Simple::Report");     
+    unless ($builder_class->does('EERS::Offline::Report')) {
+        $self->log("The builder class ($builder_class) does not implement EERS::Offline::Report");     
         return;        
     }
     
@@ -140,10 +140,13 @@ sub _run {
         my $source_file_name      = $builder->attachment_body;
         my $destination_file_name = $self->generate_destination_file_name($source_file_name);
         
-        $self->transporter->put(
-            source      => $source_file_name,
-            destination => $destination_file_name,
-        );
+        unless ($self->transporter->put(
+                    source      => $source_file_name,
+                    destination => $destination_file_name,
+                )) {
+            $self->log("The transporter failed: " . $self->transporter->error); 
+            return;            
+        }
         
         $request->attachment_type($builder->attachment_type);
         $request->attachment_body($destination_file_name);

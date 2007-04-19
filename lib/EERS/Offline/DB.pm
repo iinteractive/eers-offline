@@ -1,5 +1,5 @@
 
-package EERS::GenServer::Simple::DB;
+package EERS::Offline::DB;
 
 use strict;
 use warnings;

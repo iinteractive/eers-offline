@@ -10,9 +10,9 @@ use Test::MockObject;
 use Data::Dumper;
 
 BEGIN {
-    use_ok('EERS::GenServer::Simple::DB');    
-    use_ok('EERS::GenServer::Simple::Client');
-    use_ok('EERS::GenServer::Simple::Server');    
+    use_ok('EERS::Offline::DB');    
+    use_ok('EERS::Offline::Client');
+    use_ok('EERS::Offline::Server');    
 }
 
 unlink('gen_server_test.db');
@@ -27,22 +27,22 @@ $session->set_isa('EERS::Entities::Session');
 $session->mock('getSessionId' => sub { $MOCK_SESSION_ID });
 $session->mock('getUserID'    => sub { $MOCK_USER_ID    });
 
-my $schema = EERS::GenServer::Simple::DB->connect(
+my $schema = EERS::Offline::DB->connect(
     "dbi:SQLite:dbname=gen_server_test.db", 
     undef, 
     undef, 
     { PrintError => 0, RaiseError => 1 } 
 );
 
-my $s = EERS::GenServer::Simple::Server->new(
+my $s = EERS::Offline::Server->new(
     schema => $schema,
 );
-isa_ok($s, 'EERS::GenServer::Simple::Server');
+isa_ok($s, 'EERS::Offline::Server');
 
-my $c = EERS::GenServer::Simple::Client->new(
+my $c = EERS::Offline::Client->new(
     schema => $schema,
 );
-isa_ok($c, 'EERS::GenServer::Simple::Client');
+isa_ok($c, 'EERS::Offline::Client');
 
 ok(!defined($s->get_next_pending_request), '... no pending requests');
 

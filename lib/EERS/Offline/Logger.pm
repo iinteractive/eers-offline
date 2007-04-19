@@ -1,5 +1,5 @@
 
-package EERS::GenServer::Simple::Logger;
+package EERS::Offline::Logger;
 use Moose;
 
 our $VERSION = '0.01';

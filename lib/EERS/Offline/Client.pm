@@ -1,11 +1,11 @@
 
-package EERS::GenServer::Simple::Client;
+package EERS::Offline::Client;
 use Moose;
 use MooseX::Params::Validate;
 
 our $VERSION = '0.01';
 
-with 'EERS::GenServer::Simple::WithSchema';
+with 'EERS::Offline::WithSchema';
 
 ## Methods
 

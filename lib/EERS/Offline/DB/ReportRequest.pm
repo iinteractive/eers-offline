@@ -1,5 +1,5 @@
 
-package EERS::GenServer::Simple::DB::ReportRequest;
+package EERS::Offline::DB::ReportRequest;
 
 use strict;
 use warnings;
@@ -65,7 +65,7 @@ __PACKAGE__->add_columns(
 
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->resultset_class('EERS::GenServer::Simple::DB::ReportRequest::ResultSet');
+__PACKAGE__->resultset_class('EERS::Offline::DB::ReportRequest::ResultSet');
 
 ## Status related methods
 
@@ -105,7 +105,7 @@ sub is_completed { (shift)->status eq any(COMPLETED, ERROR) }
 sub has_error    { (shift)->status eq ERROR }
 sub is_deleted   { (shift)->status eq DELETED }
 
-package EERS::GenServer::Simple::DB::ReportRequest::ResultSet;
+package EERS::Offline::DB::ReportRequest::ResultSet;
 
 use strict;
 use warnings;
@@ -119,7 +119,7 @@ use base 'DBIx::Class::ResultSet';
 sub get_first_submitted_request {
     my $self = shift;    
     my $requests = $self->search(
-        { status   => EERS::GenServer::Simple::DB::ReportRequest->SUBMITTED },
+        { status   => EERS::Offline::DB::ReportRequest->SUBMITTED },
         { order_by => 'status asc' },
     );    
     # NOTE:
@@ -133,7 +133,7 @@ sub get_first_submitted_request {
 sub get_undeleted_requests_for {
     my ($self, %params) = @_;    
     my $requests = $self->search({ 
-        status => { '!=' => EERS::GenServer::Simple::DB::ReportRequest->DELETED },
+        status => { '!=' => EERS::Offline::DB::ReportRequest->DELETED },
         %params,
     });    
 }

@@ -1,12 +1,12 @@
 
-package EERS::GenServer::Simple::Transporter::Simple;
+package EERS::Offline::Transporter::Simple;
 use Moose;
 
 use NET::SFTP;
 
 our $VERSION = '0.01';
 
-with 'EERS::GenServer::Simple::Transporter';
+with 'EERS::Offline::Transporter';
 
 has 'host'     => (is => 'ro', isa => 'Str');
 has 'username' => (is => 'ro', isa => 'Str');

@@ -12,20 +12,13 @@ use File::Spec::Functions;
 use Data::Dumper;
 
 BEGIN {
-    use_ok('EERS::Offline::DB');
-    use_ok('EERS::Offline::Client');
-    use_ok('EERS::Offline::Server');    
-    use_ok('EERS::Offline::Logger');
-    use_ok('EERS::Offline::Transporter::Simple');    
+    use_ok('EERS::Offline');  
 }
 
 ## clean out the crap
 
 unlink('gen_server_test.db');
 system('sqlite3 gen_server_test.db < db/create_table.sql');
-
-my $LOG_FILE = 'gen_server_log.txt';
-unlink($LOG_FILE);
 
 our $TEST_REPORT_FILE_NAME = 'my_test_report_pdf.txt';
 unlink($TEST_REPORT_FILE_NAME);
@@ -43,32 +36,9 @@ $session->mock('getUserID'    => sub { $MOCK_USER_ID    });
 
 ## configure object ...
 
-my $schema = EERS::Offline::DB->connect(
-    "dbi:SQLite:dbname=gen_server_test.db", 
-    undef, 
-    undef, 
-    { PrintError => 0, RaiseError => 1 } 
-);
+my $offline = EERS::Offline->new(config_file => 't/conf/basic_conf.yaml');
 
-my $logger = EERS::Offline::Logger->new(
-    log_file => $LOG_FILE,
-);
-
-my $transporter = EERS::Offline::Transporter::Simple->new(
-    source_dir_path      => curdir(),
-    destination_dir_path => curdir(),    
-);
-
-my $s = EERS::Offline::Server->new(
-    schema             => $schema,
-    logger             => $logger,
-    transporter        => $transporter,
-    report_builder_map => {
-        'TestReport' => {
-            PDF => 'My::Test::Report::PDF',
-        }
-    }
-);
+my $s = $offline->server;
 isa_ok($s, 'EERS::Offline::Server');
 
 ## define the report handlers 
@@ -91,13 +61,13 @@ isa_ok($s, 'EERS::Offline::Server');
         $file->close;
         
         $self->attachment_type('file');
-        $self->attachment_body('my_test_report_pdf.txt');        
+        $self->attachment_body($main::TEST_REPORT_FILE_NAME);        
     }
 }
 
 ## make a request ...
 
-my $c = EERS::Offline::Client->new(schema => $schema);
+my $c = $offline->client;
 isa_ok($c, 'EERS::Offline::Client');
 
 lives_ok {
@@ -128,7 +98,7 @@ q{Got a report request for deadbeef
 of report type TestReport
 and report format is PDF
 and report spec is 2006@c@org:1|2|3
-}, '... got the right report info');
+}, '... got the right report info (from attachment)');
 
 unlink($request->attachment_body);
 
@@ -142,7 +112,7 @@ and report spec is 2006@c@org:1|2|3
 
 ## now check the logs ...
 
-my $log = File::Slurp::slurp($LOG_FILE);
+my $log = File::Slurp::slurp($offline->config->{server}->{logger}->{log_file});
 $log =~ s/\[.*] //g;
 is($log, 
 q{- Starting Server Run

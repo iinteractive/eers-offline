@@ -1,12 +1,12 @@
 
-package EERS::GenServer::Simple::WithSchema;
+package EERS::Offline::WithSchema;
 use Moose::Role;
 
 our $VERSION = '0.01';
 
 has 'schema' => (
     is       => 'ro',
-    isa      => 'EERS::GenServer::Simple::DB',
+    isa      => 'EERS::Offline::DB',
     required => 1,
 );
 

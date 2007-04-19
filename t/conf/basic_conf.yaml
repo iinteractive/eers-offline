@@ -1,0 +1,25 @@
+---
+server:
+    schema:
+        dsn: "dbi:SQLite:dbname=gen_server_test.db"
+        username: 
+        password:
+        options: 
+            PrintError: 0
+            RaiseError: 1
+    logger:
+        log_file: 'gen_server_log.txt'
+    transporter:
+        source_dir_path: '.'
+        destination_dir_path: '.' 
+    report_builder_map:
+        TestReport:
+            PDF: 'My::Test::Report::PDF'
+client:
+    schema:
+        dsn: "dbi:SQLite:dbname=gen_server_test.db"
+        username: 
+        password:
+        options: 
+            PrintError: 0
+            RaiseError: 1
