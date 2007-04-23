@@ -23,6 +23,9 @@ system('sqlite3 gen_server_test.db < db/create_table.sql');
 our $TEST_REPORT_FILE_NAME = 'my_test_report_pdf.txt';
 unlink($TEST_REPORT_FILE_NAME);
 
+my $LOG_FILE = 'gen_server_log.txt';
+unlink($LOG_FILE);
+
 ## set up some mocks ...
 
 my $MOCK_SESSION_ID = 'deadbeef';
