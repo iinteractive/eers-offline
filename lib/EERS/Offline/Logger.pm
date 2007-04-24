@@ -16,7 +16,8 @@ has '_log_fh' => (
     lazy    => 1,
     default => sub {
         my $self = shift;
-        my $io = IO::File->new($self->log_file, 'a');
+        my $io = IO::File->new($self->log_file, 'a') 
+            || confess "Could not open log file (" . $self->log_file . ") because : $!";
         $io->autoflush(1);
         return $io;
     }
