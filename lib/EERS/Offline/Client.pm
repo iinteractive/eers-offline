@@ -42,15 +42,15 @@ sub create_report_request {
 
 sub get_all_report_requests_for_user {
     my $self   = shift;
-    my %params = validate(\@_,
+    my ($session, $report_format) = validatep(\@_,
         session       => { isa => 'EERS::Entities::Session' },
         report_format => { isa => 'Str', optional => 1 }, # pdf, excel, etc ...
     );
     
     return $self->schema->resultset("ReportRequest")->get_undeleted_requests_for(
-        user_id => $params{session}->getUserID,
-        (exists $params{report_format} 
-            ? (report_format => $params{report_format})
+        user_id => $session->getUserID,
+        (defined $report_format 
+            ? (report_format => $report_format)
             : ()),
     );    
 }
