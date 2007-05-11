@@ -22,7 +22,7 @@ use constant DELETED   => 'deleted';
 __PACKAGE__->load_components(qw/PK::Auto InflateColumn::DateTime InflateColumn Core/);
 __PACKAGE__->table('tbl_report_requests');
 __PACKAGE__->add_columns(
-    id => { data_type => 'INTEGER' },
+    id => { data_type => 'INTEGER', is_auto_increment => 1, is_nullable => 0  },
 
     ## User information
     # user who owns the report
@@ -32,19 +32,19 @@ __PACKAGE__->add_columns(
 
     ## Report information
     # the output format (PDF, Excel, etc)
-    report_format => { data_type => 'VARCHAR(20)' },        
+    report_format => { data_type => 'VARCHAR(20)', is_nullable => 0 },        
     # the "type" of report (could be anything, future-proofin++)
-    report_type   => { data_type => 'VARCHAR(20)' },        
+    report_type   => { data_type => 'VARCHAR(20)', is_nullable => 0 },        
     # JSON structure of the demographics, etc    
-    report_spec   => { data_type => 'TEXT' },         
+    report_spec   => { data_type => 'TEXT', is_nullable => 0 },         
 
     ## Date/Timestamp
     # timestamp of when the report was initially requested
-    request_submitted => { data_type => 'DATETIME' },    
+    request_submitted => { data_type => 'DATETIME', is_nullable => 0 },    
     # timestamp of when the request was picked up by the gen servers
-    job_submitted     => { data_type => 'DATETIME', is_nullable => 0, },        
+    job_submitted     => { data_type => 'DATETIME', is_nullable => 1 },        
     # timestamp of when the request has been fufilled
-    job_completed     => { data_type => 'DATETIME', is_nullable => 0, },         
+    job_completed     => { data_type => 'DATETIME', is_nullable => 1 },         
 
     ## Status info
     # {submitted, pending, completed, error, n/a}
@@ -52,16 +52,16 @@ __PACKAGE__->add_columns(
 
     ## Misc.
     # misc crap which might be applicable
-    additional_metadata => { data_type => 'TEXT', is_nullable => 0, },     
+    additional_metadata => { data_type => 'TEXT', is_nullable => 1, },     
 
     ## Results
     ## NOTE: results are returned as "attachments"
     
     # type of attachment sent back (uri, gif, pdf, 
     # command-to-fetch-it, error message, etc.)
-    attachment_type => { data_type => 'VARCHAR(255)', is_nullable => 0, },         
+    attachment_type => { data_type => 'VARCHAR(255)', is_nullable => 1, },         
     # the attachment payload
-    attachment_body => { data_type => 'TEXT', is_nullable => 0, },          
+    attachment_body => { data_type => 'TEXT', is_nullable => 1, },          
 
 );
 __PACKAGE__->set_primary_key('id');
@@ -105,6 +105,11 @@ sub is_completed { (shift)->status eq any(COMPLETED, ERROR) }
 sub has_error    { (shift)->status eq ERROR }
 sub is_deleted   { (shift)->status eq DELETED }
 
+sub has_attachement {
+    my $self = shift;
+    ($self->attachment_type && $self->attachment_body)
+}
+
 package EERS::Offline::DB::ReportRequest::ResultSet;
 
 use strict;
@@ -135,6 +140,20 @@ sub get_undeleted_requests_for {
     my $requests = $self->search({ 
         status => { '!=' => EERS::Offline::DB::ReportRequest->DELETED },
         %params,
+    });    
+}
+
+sub get_num_of_waiting_requests {
+    my $self = shift;    
+    my $requests = $self->count({
+        status   => EERS::Offline::DB::ReportRequest->SUBMITTED,
+    });    
+}
+
+sub get_num_of_pending_requests {
+    my $self = shift;    
+    my $requests = $self->count({
+        status   => EERS::Offline::DB::ReportRequest->PENDING,
     });    
 }
 

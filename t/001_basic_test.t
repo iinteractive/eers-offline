@@ -46,6 +46,9 @@ isa_ok($c, 'EERS::Offline::Client');
 
 ok(!defined($s->get_next_pending_request), '... no pending requests');
 
+is($s->get_num_of_waiting_requests, 0, '... no waiting requests');
+is($s->get_num_of_pending_requests, 0, '... no pending requests');
+
 my $new_request_id;
 
 {
@@ -84,6 +87,9 @@ my $new_request_id;
     ok(!defined($req->attachment_body), '... no attachement body yet');         
 }
 
+is($s->get_num_of_waiting_requests, 1, '... 1 waiting request(s)');
+is($s->get_num_of_pending_requests, 0, '... no pending requests');
+
 my $next = $s->get_next_pending_request;
 is($next->id, $new_request_id, '... got the latest request (which I had just created)');
 
@@ -91,6 +97,9 @@ ok($next->is_submitted, '... checking the status');
 ok($next->is_pending, '... checking the status');
 ok(!$next->is_completed, '... checking the status');
 ok(!$next->has_error, '... checking the status');
+
+is($s->get_num_of_waiting_requests, 0, '... no waiting requests');
+is($s->get_num_of_pending_requests, 1, '... 1 pending request(s)');
 
 # the request is now PENDING, so no more SUBMITTED in the db
 ok(!defined($s->get_next_pending_request), '... no pending requests');

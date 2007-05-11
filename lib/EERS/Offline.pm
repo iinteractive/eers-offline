@@ -45,10 +45,11 @@ has '_server' => (
         my $self = shift;
         my $conf = $self->config->{server};
         return EERS::Offline::Server->new(
-            schema             => $self->_create_schema($conf),
-            logger             => $self->_create_logger($conf),
-            transporter        => $self->_create_transporter($conf),
-            report_builder_map => $conf->{report_builder_map},
+            max_running_reports => $conf->{max_running_reports},
+            schema              => $self->_create_schema($conf),
+            logger              => $self->_create_logger($conf),
+            transporter         => $self->_create_transporter($conf),
+            report_builder_map  => $conf->{report_builder_map},
         );
     }
 );

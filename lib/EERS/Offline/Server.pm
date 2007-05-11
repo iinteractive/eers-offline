@@ -19,6 +19,12 @@ has 'logger' => (
     isa => 'EERS::Offline::Logger',
 );
 
+has 'max_running_reports' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 5,
+);
+
 # NOTE:
 # the map will map the report_type first
 # and then the report_format under it
@@ -61,10 +67,23 @@ sub get_next_pending_request {
     return $r;
 }
 
+sub get_num_of_waiting_requests { 
+    (shift)->schema->resultset("ReportRequest")->get_num_of_waiting_requests 
+}
+
+sub get_num_of_pending_requests { 
+    (shift)->schema->resultset("ReportRequest")->get_num_of_pending_requests 
+}
+
 sub run {
     my $self = shift;
     
     $self->log("Starting Server Run");
+    
+    if ($self->get_num_of_pending_requests >= $self->max_running_reports) {
+        $self->log("Max number of reports already running (" . $self->max_running_reports . ")");  
+        return;      
+    }
     
     my $request = $self->get_next_pending_request;
     
@@ -78,14 +97,17 @@ sub run {
         # if the transaction failed 
         # (pending but not run),.. need to 
         # test it - SL
-        if ($self->_run($request)) {
+        if (eval { $self->_run($request) }) {
             $request->set_status_to_completed;
         }
         else {
             $request->set_status_to_error;
         }        
         $request->update;
-    });    
+    }); 
+    
+    # return false if we have an error ...
+    $request->has_error ? 0 : 1;
 }
 
 sub _run {
@@ -117,7 +139,7 @@ sub _run {
         return;        
     }
     
-    unless ($builder_class->does('EERS::Offline::Report')) {
+    unless ($builder_class->can('does') && $builder_class->does('EERS::Offline::Report')) {
         $self->log("The builder class ($builder_class) does not implement EERS::Offline::Report");     
         return;        
     }

@@ -85,7 +85,7 @@ lives_ok {
 
 ## now run the report 
 
-$s->run();
+ok($s->run(), '... ran successfully');
 
 ## now check the reports
 
@@ -95,6 +95,8 @@ ok($request->is_submitted, '... checking the status');
 ok(!$request->is_pending, '... checking the status');
 ok($request->is_completed, '... checking the status');
 ok(!$request->has_error, '... checking the status');
+
+ok($request->has_attachement, '... we do have an attachement');
 
 my $report = File::Slurp::slurp($request->attachment_body);
 is($report, 

@@ -71,6 +71,8 @@ my $s = EERS::Offline::Server->new(
 );
 isa_ok($s, 'EERS::Offline::Server');
 
+ok(!defined($s->run()), '... nothing to run, so returned undef');
+
 ## define the report handlers 
 
 {
@@ -81,22 +83,9 @@ isa_ok($s, 'EERS::Offline::Server');
 
     sub create {
         my ($self, $request) = @_;
-        
-        my $file = IO::File->new($main::TEST_REPORT_FILE_NAME, 'w') 
-            || confess "Could not create report file because : $!";
-        $file->print("Got a report request for " . $request->session_id . "\n");
-        $file->print("of report type " . $request->report_type . "\n");        
-        $file->print("and report format is " . $request->report_format . "\n");    
-        $file->print("and report spec is " . $request->report_spec . "\n");                        
-        $file->close;
-        
-        $self->attachment_type('file');
-        $self->attachment_body('my_test_report_pdf.txt');        
+        die "Whoops\n";
     }
 }
-
-is($s->get_num_of_waiting_requests, 0, '... no waiting request(s)');
-is($s->get_num_of_pending_requests, 0, '... no pending request(s)');
 
 ## make a request ...
 
@@ -112,44 +101,20 @@ lives_ok {
     );
 } '... created the report request successfully';
 
-is($s->get_num_of_waiting_requests, 1, '... 1 waiting request(s)');
-is($s->get_num_of_pending_requests, 0, '... no pending request(s)');
-
 ## now run the report 
 
-ok($s->run(), '... ran successfully');
+ok(!$s->run(), '... ran successfully, but found an error');
 
 ## now check the reports
 
-is($s->get_num_of_waiting_requests, 0, '... no waiting request(s)');
-is($s->get_num_of_pending_requests, 0, '... no pending request(s)');
-
 my ($request) = $c->get_all_report_requests_for_user(session => $session)->all;
 
-ok($request->is_submitted, '... checking the status');
-ok(!$request->is_pending, '... checking the status');
-ok($request->is_completed, '... checking the status');
-ok(!$request->has_error, '... checking the status');
+ok($request->is_submitted, '... checking the status (is submitted)');
+ok(!$request->is_pending, '... checking the status (is not pending)');
+ok($request->is_completed, '... checking the status (is completed)');
+ok($request->has_error, '... checking the status (does have an error)');
 
-ok($request->has_attachement, '... we do have an attachement');
-
-my $report = File::Slurp::slurp($request->attachment_body);
-is($report, 
-q{Got a report request for deadbeef
-of report type TestReport
-and report format is PDF
-and report spec is 2006@c@org:1|2|3
-}, '... got the right report info');
-
-unlink($request->attachment_body);
-
-my $orig_report = File::Slurp::slurp($TEST_REPORT_FILE_NAME);
-is($orig_report, 
-q{Got a report request for deadbeef
-of report type TestReport
-and report format is PDF
-and report spec is 2006@c@org:1|2|3
-}, '... got the right report info');
+ok(!$request->has_attachement, '... we do not have an attachement');
 
 ## now check the logs ...
 
@@ -158,7 +123,12 @@ $log =~ s/\[.*] //g;
 is($log, 
 q{- Starting Server Run
 - Looking for requests ...
+- No requests found
+- Starting Server Run
+- Looking for requests ...
 - Request (id => 1) found
+- Report builder class (My::Test::Report::PDF) threw an exception : Whoops
+
 }, '... got the right log info');
 
 
