@@ -8,7 +8,7 @@ use DateTime;
 use DateTime::Format::MySQL;
 use Perl6::Junction 'any';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'DBIx::Class';
 

@@ -5,7 +5,7 @@ use Moose;
 use File::Copy 'copy';
 use File::Spec::Functions 'catfile';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 with 'EERS::Offline::Transporter';
 

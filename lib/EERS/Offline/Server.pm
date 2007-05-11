@@ -4,7 +4,7 @@ use Moose;
 
 use Data::UUID;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 with 'EERS::Offline::WithSchema';
 

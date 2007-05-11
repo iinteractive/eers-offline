@@ -9,7 +9,7 @@ use EERS::Offline::Config;
 use EERS::Offline::Server;
 use EERS::Offline::Client;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 with 'MooseX::Getopt';
 

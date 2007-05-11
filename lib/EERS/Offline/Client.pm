@@ -3,7 +3,7 @@ package EERS::Offline::Client;
 use Moose;
 use MooseX::Params::Validate;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 with 'EERS::Offline::WithSchema';
 
