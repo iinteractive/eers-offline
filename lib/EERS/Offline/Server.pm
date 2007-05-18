@@ -169,6 +169,9 @@ sub _run {
             $self->log("The transporter failed: " . $self->transporter->error); 
             return;            
         }
+        else {
+            $self->log("The transporter succecceded."); 
+        }
         
         $request->attachment_type($builder->attachment_type);
         $request->attachment_body($destination_file_name);
