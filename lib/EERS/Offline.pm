@@ -99,8 +99,7 @@ sub _create_transporter {
     Class::MOP::load_class($transporter_class);
     
     return $transporter_class->new(
-        source_dir_path      => $conf->{transporter}->{source_dir_path},
-        destination_dir_path => $conf->{transporter}->{destination_dir_path},    
+        %{$conf->{transporter}}
     );
 }
 

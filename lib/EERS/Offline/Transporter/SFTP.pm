@@ -1,5 +1,5 @@
 
-package EERS::Offline::Transporter::Simple;
+package EERS::Offline::Transporter::SFTP;
 use Moose;
 
 use NET::SFTP;
