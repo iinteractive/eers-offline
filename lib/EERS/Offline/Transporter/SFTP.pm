@@ -3,6 +3,7 @@ package EERS::Offline::Transporter::SFTP;
 use Moose;
 
 use Net::SFTP;
+use File::Spec::Functions;
 
 our $VERSION = '0.01';
 
