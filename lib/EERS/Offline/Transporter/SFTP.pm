@@ -21,8 +21,8 @@ sub put {
         
     eval {
         my $sftp = Net::SFTP->new($self->host,
-            user     => $self->user,
-            password => $self->pass,
+            user     => $self->username,
+            password => $self->password,
         );
 
         unless ($sftp) {
