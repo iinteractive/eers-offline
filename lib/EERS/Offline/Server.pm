@@ -101,6 +101,10 @@ sub run {
             $request->set_status_to_completed;
         }
         else {
+            $self->log("Report Run failed.");            
+            if ($@) {
+                $self->log("Exception = $@");                            
+            }
             $request->set_status_to_error;
         }        
         $request->update;
@@ -138,10 +142,16 @@ sub _run {
         $self->log("Could not load builder class ($builder_class) because : $@");     
         return;        
     }
+    else {
+        $self->log("Loaded builder class ($builder_class) successfully");         
+    }
     
     unless ($builder_class->can('does') && $builder_class->does('EERS::Offline::Report')) {
         $self->log("The builder class ($builder_class) does not implement EERS::Offline::Report");     
         return;        
+    }
+    else {
+        $self->log("The builder class ($builder_class) implements EERS::Offline::Report");                 
     }
     
     my $builder;
