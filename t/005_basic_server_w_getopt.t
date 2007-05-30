@@ -124,6 +124,9 @@ is($log,
 q{- Starting Server Run
 - Looking for requests ...
 - Request (id => 1) found
+- Loaded builder class (My::Test::Report::PDF) successfully
+- The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
+- The transporter succecceded.
 }, '... got the right log info');
 
 

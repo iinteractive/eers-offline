@@ -127,8 +127,11 @@ q{- Starting Server Run
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 1) found
+- Loaded builder class (My::Test::Report::PDF) successfully
+- The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - Report builder class (My::Test::Report::PDF) threw an exception : Whoops
 
+- Report Run failed.
 }, '... got the right log info');
 
 
