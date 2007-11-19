@@ -1,5 +1,6 @@
 ---
 server:
+    max_running_reports: 1
     schema:
         dsn: "dbi:SQLite:dbname=gen_server_test.db"
         username: 

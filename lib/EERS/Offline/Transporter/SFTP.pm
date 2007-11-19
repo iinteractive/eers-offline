@@ -13,6 +13,20 @@ has 'host'     => (is => 'ro', isa => 'Str');
 has 'username' => (is => 'ro', isa => 'Str');
 has 'password' => (is => 'ro', isa => 'Str');
 
+has '_sftp_handle' => (
+    is      => 'ro',
+    isa     => 'Net::SFTP',
+    lazy    => 1,
+    clearer => '_clear_sftp_handle',
+    default => sub {
+        my $self = shift;
+        Net::SFTP->new($self->host,
+            user     => $self->username,
+            password => $self->password,
+        );        
+    }
+);
+
 sub put {
     my ($self, %params) = @_;
     
@@ -20,10 +34,7 @@ sub put {
     my $destination_path = catfile($self->destination_dir_path, $params{destination});
         
     eval {
-        my $sftp = Net::SFTP->new($self->host,
-            user     => $self->username,
-            password => $self->password,
-        );
+        my $sftp = $self->_sftp_handle;
 
         unless ($sftp) {
             $self->error("Unable to connect via SFTP to host(" . $self->host . ")");
@@ -41,6 +52,7 @@ sub put {
     };
     if ($@) {
         $self->error('SFTP Error: ' . $@);
+        $self->_clear_sftp_handle;
         return;
     }
     return 1;

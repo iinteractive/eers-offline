@@ -75,6 +75,20 @@ sub get_num_of_pending_requests {
     (shift)->schema->resultset("ReportRequest")->get_num_of_pending_requests 
 }
 
+# run reports in batches ...
+sub run_up_to {
+    my ($self, $num_reports) = @_;
+    $self->log("Running up to ($num_reports) reports");    
+    my $num_reports_run = 0;
+    for (1 .. $num_reports) {
+        my $result = $self->run;
+        last unless defined $result;
+        $num_reports_run++ if $result;
+    }
+    $self->log("Ran ($num_reports_run) reports"); 
+    return $num_reports_run;
+}
+
 sub run {
     my $self = shift;
     
