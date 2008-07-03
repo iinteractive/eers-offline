@@ -4,7 +4,7 @@ use Moose;
 
 use Data::UUID;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 with 'EERS::Offline::WithSchema';
 
@@ -171,7 +171,7 @@ sub _run {
     my $builder;
     eval { 
         $builder = $builder_class->new;
-        $builder->create($request) 
+        $builder->create($request, $self->logger);
     };
     if ($@) {
         $self->log("Report builder class ($builder_class) threw an exception : $@");
