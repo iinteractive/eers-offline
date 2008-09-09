@@ -125,7 +125,7 @@ sub get_first_submitted_request {
     my $self = shift;    
     my $requests = $self->search(
         { status   => EERS::Offline::DB::ReportRequest->SUBMITTED },
-        { order_by => 'status asc' },
+        { order_by => 'id asc' },
     );    
     # NOTE:
     # just grab the first one, there is 

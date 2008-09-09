@@ -59,11 +59,12 @@ sub get_next_pending_request {
         $self->log("No requests found");
         return;
     }
+    $self->log("Request (id => " . $r->id . ") found");
     $schema->txn_do(sub {
         $r->set_status_to_pending;
         $r->update;
     });
-    $self->log("Request (id => " . $r->id . ") found");
+    $self->log("Request (id => " . $r->id . ") now pending ...");
     return $r;
 }
 
