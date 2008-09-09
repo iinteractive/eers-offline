@@ -64,7 +64,7 @@ sub get_next_pending_request {
         $r->set_status_to_pending;
         $r->update;
     });
-    $self->log("Request (id => " . $r->id . ") now pending ...");
+    $self->log("Request (id => " . $r->id . ") set to pending ...");
     return $r;
 }
 

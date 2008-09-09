@@ -132,7 +132,8 @@ sub get_first_submitted_request {
     # almost certainly a better way to 
     # do this, but this should work for 
     # now. - SL
-    $requests->next;
+    my ($r) = $requests->all;
+    return $r;
 }
 
 sub get_undeleted_requests_for {
