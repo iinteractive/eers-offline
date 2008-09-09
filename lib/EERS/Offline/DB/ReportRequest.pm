@@ -78,7 +78,6 @@ sub set_status_to_submitted {
 sub set_status_to_pending { 
     my $self = shift; 
     $self->status(PENDING);
-    $self->report_type("Report($$)");
     $self->job_submitted(DateTime->now);
 }
 
