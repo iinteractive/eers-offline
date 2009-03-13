@@ -13,9 +13,9 @@ my $schema_constraint = And(
     OnHashKeys('options' => IsHashRef)
 );
 
-subtype 'EERS::Offline::Config::Simple'
-    => as 'HashRef' 
-    => And(
+subtype('EERS::Offline::Config::Simple' => {
+    as    => 'HashRef',
+    where => And(
         IsHashRef,
         HasAllKeys('client', 'server'),
         OnHashKeys(
@@ -42,7 +42,8 @@ subtype 'EERS::Offline::Config::Simple'
                 )                
             )
         )
-    );
+    )
+});
 
 1;
 

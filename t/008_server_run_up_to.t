@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More no_plan => 1;
+use Test::More 'no_plan';
 use Test::Exception;
 use Test::MockObject;
 
@@ -100,30 +100,35 @@ q{- Running up to (5) reports
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 1) found
+- Request (id => 1) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - The transporter succecceded.
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 2) found
+- Request (id => 2) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - The transporter succecceded.
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 3) found
+- Request (id => 3) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - The transporter succecceded.
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 4) found
+- Request (id => 4) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - The transporter succecceded.
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 5) found
+- Request (id => 5) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - The transporter succecceded.
@@ -132,6 +137,7 @@ q{- Running up to (5) reports
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 6) found
+- Request (id => 6) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - The transporter succecceded.

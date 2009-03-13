@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More no_plan => 1;
+use Test::More 'no_plan';
 use Test::Exception;
 use Test::MockObject;
 
@@ -124,6 +124,7 @@ q{- Looking for requests ...
 - No requests found
 - Looking for requests ...
 - Request (id => 1) found
+- Request (id => 1) set to pending ...
 - Looking for requests ...
 - No requests found
 }, '... got the right log info');

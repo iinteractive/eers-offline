@@ -11,7 +11,7 @@ with 'EERS::Offline::WithSchema';
 
 sub create_report_request {
     my $self   = shift;
-    my %params = validate(\@_,
+    my %params = validated_hash(\@_,
         session             => { isa => 'EERS::Entities::Session' },
         report_format       => { isa => 'Str' }, # pdf, excel, etc ...
         report_type         => { isa => 'Str' }, # usually a class name of some kind ...
@@ -42,7 +42,7 @@ sub create_report_request {
 
 sub get_all_report_requests_for_user {
     my $self   = shift;
-    my ($session, $report_format) = validatep(\@_,
+    my ($session, $report_format) = validated_list(\@_,
         session       => { isa => 'EERS::Entities::Session' },
         report_format => { isa => 'Str', optional => 1 }, # pdf, excel, etc ...
     );

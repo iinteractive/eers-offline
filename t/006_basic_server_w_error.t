@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More no_plan => 1;
+use Test::More 'no_plan';
 use Test::Exception;
 use Test::MockObject;
 
@@ -127,6 +127,7 @@ q{- Starting Server Run
 - Starting Server Run
 - Looking for requests ...
 - Request (id => 1) found
+- Request (id => 1) set to pending ...
 - Loaded builder class (My::Test::Report::PDF) successfully
 - The builder class (My::Test::Report::PDF) implements EERS::Offline::Report
 - Report builder class (My::Test::Report::PDF) threw an exception : Whoops
