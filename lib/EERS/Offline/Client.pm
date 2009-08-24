@@ -18,9 +18,9 @@ sub create_report_request {
         report_spec         => { isa => 'Str' }, # the serialized filter ...
         additional_metadata => { isa => 'Str', optional => 1 },
     );
-    
-    my $schema = $self->schema;    
-    
+
+    my $schema = $self->schema;
+
     my $r;
     $schema->txn_do(sub {
         $r = $schema->resultset("ReportRequest")->new({
@@ -28,31 +28,35 @@ sub create_report_request {
             session_id        => $params{session}->getSessionId,
             report_format     => $params{report_format},
             report_type       => $params{report_type},
-            report_spec       => $params{report_spec},    
+            report_spec       => $params{report_spec},
             (exists $params{additional_metadata}
                 ? (additional_metadata => $params{additional_metadata})
-                : ())                    
+                : ())
         });
         $r->set_status_to_submitted;
         $r->insert;
-    }); 
-    
-    return $r;   
+    });
+
+    return $r;
 }
 
 sub get_all_report_requests_for_user {
     my $self   = shift;
-    my ($session, $report_format) = validated_list(\@_,
+    my ($session, $report_format, $report_type) = validated_list(\@_,
         session       => { isa => 'EERS::Entities::Session' },
         report_format => { isa => 'Str', optional => 1 }, # pdf, excel, etc ...
+        report_type   => { isa => 'Str', optional => 1 }, # Scorecard, Comments
     );
-    
+
     return $self->schema->resultset("ReportRequest")->get_undeleted_requests_for(
         user_id => $session->getUserID,
-        (defined $report_format 
+        (defined $report_format
             ? (report_format => $report_format)
             : ()),
-    );    
+        (defined $report_type
+            ? (report_type => $report_type)
+            : ()),
+    );
 }
 
 no Moose;
