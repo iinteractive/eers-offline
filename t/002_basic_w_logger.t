@@ -13,7 +13,7 @@ use Data::Dumper;
 BEGIN {
     use_ok('EERS::Offline::DB');
     use_ok('EERS::Offline::Client');
-    use_ok('EERS::Offline::Server');    
+    use_ok('EERS::Offline::Server');
     use_ok('EERS::Offline::Logger');
 }
 
@@ -33,10 +33,10 @@ $session->mock('getSessionId' => sub { $MOCK_SESSION_ID });
 $session->mock('getUserID'    => sub { $MOCK_USER_ID    });
 
 my $schema = EERS::Offline::DB->connect(
-    "dbi:SQLite:dbname=gen_server_test.db", 
-    undef, 
-    undef, 
-    { PrintError => 0, RaiseError => 1 } 
+    "dbi:SQLite:dbname=gen_server_test.db",
+    undef,
+    undef,
+    { PrintError => 0, RaiseError => 1 }
 );
 
 my $logger = EERS::Offline::Logger->new(
@@ -44,8 +44,13 @@ my $logger = EERS::Offline::Logger->new(
 );
 
 my $s = EERS::Offline::Server->new(
-    schema => $schema,
-    logger => $logger,
+    schema             => $schema,
+    logger             => $logger,
+    report_builder_map => {
+        'Employee' => {
+            PDF => 'My::Employee::Report::PDF',
+        },
+    }
 );
 isa_ok($s, 'EERS::Offline::Server');
 
@@ -64,7 +69,7 @@ my $new_request_id;
     lives_ok {
         $req = $c->create_report_request(
             session       => $session,
-            report_format => 'PDF', 
+            report_format => 'PDF',
             report_type   => 'Employee',
             report_spec   => $MOCK_FILTER,
         );
@@ -84,15 +89,15 @@ my $new_request_id;
     is($req->report_type, 'Employee', '... got the right report_type');
     is($req->report_spec, $MOCK_FILTER, '... got the right report_spec');
 
-    ok(defined($req->request_submitted), '... request has been submitted');    
+    ok(defined($req->request_submitted), '... request has been submitted');
     isa_ok($req->request_submitted, 'DateTime');
-    
+
     ok(!defined($req->job_submitted), '... job not submitted yet');
-    ok(!defined($req->job_completed), '... job not completed yet'); 
-    
-    ok(!defined($req->additional_metadata), '... no additional metadata yet');        
-    ok(!defined($req->attachment_type), '... no attachement type yet');     
-    ok(!defined($req->attachment_body), '... no attachement body yet');         
+    ok(!defined($req->job_completed), '... job not completed yet');
+
+    ok(!defined($req->additional_metadata), '... no additional metadata yet');
+    ok(!defined($req->attachment_type), '... no attachement type yet');
+    ok(!defined($req->attachment_body), '... no attachement body yet');
 }
 
 is($s->get_num_of_waiting_requests, 1, '... 1 waiting request(s)');
@@ -119,7 +124,7 @@ is($next->id, $my_request->id, '... got the right list of requests for my sessio
 
 my $log = File::Slurp::slurp($LOG_FILE);
 $log =~ s/\[.*] //g;
-is($log, 
+is($log,
 q{- Looking for requests ...
 - No requests found
 - Looking for requests ...

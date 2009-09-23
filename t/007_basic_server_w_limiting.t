@@ -13,7 +13,7 @@ use Data::Dumper;
 BEGIN {
     use_ok('EERS::Offline::DB');
     use_ok('EERS::Offline::Client');
-    use_ok('EERS::Offline::Server');    
+    use_ok('EERS::Offline::Server');
     use_ok('EERS::Offline::Logger');
 }
 
@@ -33,10 +33,10 @@ $session->mock('getSessionId' => sub { $MOCK_SESSION_ID });
 $session->mock('getUserID'    => sub { $MOCK_USER_ID    });
 
 my $schema = EERS::Offline::DB->connect(
-    "dbi:SQLite:dbname=gen_server_test.db", 
-    undef, 
-    undef, 
-    { PrintError => 0, RaiseError => 1 } 
+    "dbi:SQLite:dbname=gen_server_test.db",
+    undef,
+    undef,
+    { PrintError => 0, RaiseError => 1 }
 );
 
 my $logger = EERS::Offline::Logger->new(
@@ -50,7 +50,7 @@ my $s = EERS::Offline::Server->new(
         'TestReport' => {
             PDF => 'My::Test::Report::PDF',
         }
-    }    
+    }
 );
 isa_ok($s, 'EERS::Offline::Server');
 
@@ -62,12 +62,12 @@ is($s->get_num_of_pending_requests, 0, '... no pending request(s)');
 
 ok(!defined($s->get_next_pending_request), '... no pending requests');
 
-## define the report handlers 
+## define the report handlers
 
 {
     package My::Test::Report::PDF;
     use Moose;
-    
+
     with 'EERS::Offline::Report';
 
     sub create {
@@ -83,11 +83,11 @@ for (1 .. 6) {
     lives_ok {
         $req = $c->create_report_request(
             session       => $session,
-            report_format => 'PDF', 
-            report_type   => 'Employee',
+            report_format => 'PDF',
+            report_type   => 'TestReport',
             report_spec   => $MOCK_FILTER,
         );
-    } '... created the report request (' . $_ . ') successfully';     
+    } '... created the report request (' . $_ . ') successfully';
 }
 
 is($s->get_num_of_waiting_requests, 6, '... 6 waiting request(s)');
@@ -104,7 +104,7 @@ ok(!defined($s->run()), '... nothing to run, so returned undef');
 
 my $log = File::Slurp::slurp($LOG_FILE);
 $log =~ s/\[.*] //g;
-is($log, 
+is($log,
 q{- Looking for requests ...
 - No requests found
 - Looking for requests ...

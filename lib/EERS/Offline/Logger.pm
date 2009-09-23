@@ -2,6 +2,8 @@
 package EERS::Offline::Logger;
 use Moose;
 
+use IO::File;
+
 our $VERSION = '0.01';
 
 has 'log_file' => (
@@ -11,12 +13,12 @@ has 'log_file' => (
 );
 
 has '_log_fh' => (
-    is      => 'ro', 
+    is      => 'ro',
     isa     => 'IO::File',
     lazy    => 1,
     default => sub {
         my $self = shift;
-        my $io = IO::File->new($self->log_file, 'a') 
+        my $io = IO::File->new($self->log_file, 'a')
             || confess "Could not open log file (" . $self->log_file . ") because : $!";
         $io->autoflush(1);
         return $io;
@@ -25,7 +27,7 @@ has '_log_fh' => (
 
 sub log {
     my ($self, $message) = @_;
-    $self->_log_fh->print("[ $$ : " . localtime(time) . " ] - $message\n");    
+    $self->_log_fh->print("[ $$ : " . localtime(time) . " ] - $message\n");
 }
 
 sub DEMOLISH {

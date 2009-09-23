@@ -30,11 +30,20 @@ has 'max_running_reports' => (
 # and then the report_format under it
 # this is because report_format is a more
 # "fixed" list (for some def of fixed)
-# - SL 
+# - SL
 has 'report_builder_map' => (
     is      => 'ro',
     isa     => 'HashRef',
     default => sub {{}}
+);
+
+has 'supported_report_types' => (
+    is      => 'ro',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    default => sub {
+        [ keys %{ (shift)->report_builder_map } ]
+    },
 );
 
 ## Methods
@@ -45,16 +54,16 @@ sub log { ((shift)->logger || return)->log(@_) }
 sub generate_destination_file_name {
     my ($self, $source_file_name) = @_;
     my $uuid_gen = Data::UUID->new;
-    my $uuid = $uuid_gen->to_string($uuid_gen->create); 
-    my ($source_file_type) = ($source_file_name =~ /\.(.*)$/);   
+    my $uuid = $uuid_gen->to_string($uuid_gen->create);
+    my ($source_file_type) = ($source_file_name =~ /\.(.*)$/);
     return $uuid . '.' . $source_file_type;
 }
 
 sub get_next_pending_request {
-    my $self = shift;    
+    my $self = shift;
     my $schema = $self->schema;
     $self->log("Looking for requests ...");
-    my $r = $schema->resultset("ReportRequest")->get_first_submitted_request;
+    my $r = $schema->resultset("ReportRequest")->get_first_submitted_request( $self );
     unless (defined $r) {
         $self->log("No requests found");
         return;
@@ -68,63 +77,65 @@ sub get_next_pending_request {
     return $r;
 }
 
-sub get_num_of_waiting_requests { 
-    (shift)->schema->resultset("ReportRequest")->get_num_of_waiting_requests 
+sub get_num_of_waiting_requests {
+    my $self = shift;
+    $self->schema->resultset("ReportRequest")->get_num_of_waiting_requests( $self )
 }
 
-sub get_num_of_pending_requests { 
-    (shift)->schema->resultset("ReportRequest")->get_num_of_pending_requests 
+sub get_num_of_pending_requests {
+    my $self = shift;
+    $self->schema->resultset("ReportRequest")->get_num_of_pending_requests( $self )
 }
 
 # run reports in batches ...
 sub run_up_to {
     my ($self, $num_reports) = @_;
-    $self->log("Running up to ($num_reports) reports");    
+    $self->log("Running up to ($num_reports) reports");
     my $num_reports_run = 0;
     for (1 .. $num_reports) {
         my $result = $self->run;
         last unless defined $result;
         $num_reports_run++ if $result;
     }
-    $self->log("Ran ($num_reports_run) reports"); 
+    $self->log("Ran ($num_reports_run) reports");
     return $num_reports_run;
 }
 
 sub run {
     my $self = shift;
-    
+
     $self->log("Starting Server Run");
-    
+
     if ($self->get_num_of_pending_requests >= $self->max_running_reports) {
-        $self->log("Max number of reports already running (" . $self->max_running_reports . ")");  
-        return;      
+        $self->log("Max number of reports already running (" . $self->max_running_reports . ")");
+        return;
     }
-    
+
     my $request = $self->get_next_pending_request;
-    
+
     return unless defined $request;
-    
+
     $self->schema->txn_do(sub {
         # NOTE:
-        # perhaps I dont want to do this 
+        # perhaps I dont want to do this
         # within the transaction. I think it
         # it would leave it in a bad state
-        # if the transaction failed 
-        # (pending but not run),.. need to 
+        # if the transaction failed
+        # (pending but not run),.. need to
         # test it - SL
         if (eval { $self->_run($request) }) {
             $request->set_status_to_completed;
         }
         else {
-            $self->log("Report Run failed.");            
+            $self->log("Report Run failed.");
             if ($@) {
-                $self->log("Exception = $@");                            
+                $self->log("Exception = $@");
             }
             $request->set_status_to_error;
-        }        
+        }
         $request->update;
-    }); 
-    
+    });
+
     # return false if we have an error ...
     $request->has_error ? 0 : 1;
 }
@@ -133,80 +144,80 @@ sub _run {
     my ($self, $request) = @_;
 
     my $map = $self->report_builder_map;
-    
+
     unless (exists $map->{$request->report_type}) {
-        $self->log("No Report Type (" 
-                  . $request->report_type 
+        $self->log("No Report Type ("
+                  . $request->report_type
                   . ") found");
         return;
     }
 
     unless (exists $map->{$request->report_type}->{$request->report_format}) {
-        $self->log("No Report Format (type => " 
-                  . $request->report_type 
-                  . ", format => " 
-                  . $request->report_format 
+        $self->log("No Report Format (type => "
+                  . $request->report_type
+                  . ", format => "
+                  . $request->report_format
                   . ") found");
-        return;        
-    }        
-                             
+        return;
+    }
+
     my $builder_class = $map->{$request->report_type}->{$request->report_format};
-    
+
     eval { Class::MOP::load_class($builder_class) };
     if ($@) {
-        $self->log("Could not load builder class ($builder_class) because : $@");     
-        return;        
+        $self->log("Could not load builder class ($builder_class) because : $@");
+        return;
     }
     else {
-        $self->log("Loaded builder class ($builder_class) successfully");         
+        $self->log("Loaded builder class ($builder_class) successfully");
     }
-    
+
     unless ($builder_class->can('does') && $builder_class->does('EERS::Offline::Report')) {
-        $self->log("The builder class ($builder_class) does not implement EERS::Offline::Report");     
-        return;        
+        $self->log("The builder class ($builder_class) does not implement EERS::Offline::Report");
+        return;
     }
     else {
-        $self->log("The builder class ($builder_class) implements EERS::Offline::Report");                 
+        $self->log("The builder class ($builder_class) implements EERS::Offline::Report");
     }
-    
+
     my $builder;
-    eval { 
+    eval {
         $builder = $builder_class->new;
         $builder->create($request, $self->logger);
     };
     if ($@) {
         $self->log("Report builder class ($builder_class) threw an exception : $@");
-        return;        
-    }    
-    
+        return;
+    }
+
     if ($self->has_transporter) {
-        
+
         ($builder->attachment_type eq 'file')
             || confess "Currently only file attachments are supported";
-        
+
         my $source_file_name      = $builder->attachment_body;
         my $destination_file_name = $self->generate_destination_file_name($source_file_name);
-        
+
         unless ($self->transporter->put(
                     source      => $source_file_name,
                     destination => $destination_file_name,
                 )) {
-            $self->log("The transporter failed: " . $self->transporter->error); 
-            return;            
+            $self->log("The transporter failed: " . $self->transporter->error);
+            return;
         }
         else {
-            $self->log("The transporter succecceded."); 
+            $self->log("The transporter succecceded.");
         }
-        
+
         $request->attachment_type($builder->attachment_type);
         $request->attachment_body($destination_file_name);
-        
+
     }
     else {
         $request->attachment_type($builder->attachment_type);
-        $request->attachment_body($builder->attachment_body);        
+        $request->attachment_body($builder->attachment_body);
     }
-    
+
     return 1;
 }
 
