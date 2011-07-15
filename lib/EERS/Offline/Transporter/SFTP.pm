@@ -49,7 +49,7 @@ sub put {
         }
     }
     catch {
-        $self->error('SFTP Error: ' . $@);
+        $self->error('SFTP Error: ' . $_);
         $self->_clear_sftp_handle;
         return;
     };
