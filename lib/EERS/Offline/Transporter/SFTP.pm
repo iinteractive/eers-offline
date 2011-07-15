@@ -36,7 +36,7 @@ sub put {
     try {
         my $sftp = $self->_sftp_handle;
 
-        if ($sftp->error) {
+        if ( $sftp ) {
             die "Unable to connect to host(" . $self->host . ")";
         }
 
