@@ -2,6 +2,7 @@
 package EERS::Offline::Transporter::SFTP;
 use Moose;
 
+use Try::Tiny;
 use Net::SFTP;
 use File::Spec::Functions;
 
