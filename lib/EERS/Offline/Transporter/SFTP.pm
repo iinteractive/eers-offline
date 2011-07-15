@@ -15,7 +15,7 @@ has 'password' => (is => 'ro', isa => 'Str');
 
 has '_sftp_handle' => (
     is      => 'ro',
-    isa     => 'Net::SFTP::Foreign',
+    isa     => 'Net::SFTP',
     lazy    => 1,
     clearer => '_clear_sftp_handle',
     default => sub {
