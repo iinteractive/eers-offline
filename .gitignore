@@ -4,3 +4,4 @@ EERS-Offline-*
 .build/
 gen_server_log.txt
 gen_server_test.db
+.DS_Store
