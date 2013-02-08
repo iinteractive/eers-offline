@@ -25,6 +25,7 @@ has '_config' => (
     reader  => 'config',
     isa     => 'EERS::Offline::Config::Simple',
     lazy    => 1,
+    builder => '_build_config',
 );
 
 sub _build_config {
