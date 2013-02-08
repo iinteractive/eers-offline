@@ -25,17 +25,21 @@ has '_config' => (
     reader  => 'config',
     isa     => 'EERS::Offline::Config::Simple',
     lazy    => 1,
-    default => sub {
-        # NOTE:
-        # the config isa up there is actually
-        # just a subtype, which uses heavy
-        # validation features. It works for
-        # now, we might need to make it an
-        # object at some point, in which case
-        # this needs to change - SL
-        YAML::Syck::LoadFile((shift)->config_file)
-    }
 );
+
+sub _build_config {
+    my $self = shift;
+
+    # NOTE:
+    # the config isa up there is actually
+    # just a subtype, which uses heavy
+    # validation features. It works for
+    # now, we might need to make it an
+    # object at some point, in which case
+    # this needs to change - SL
+    YAML::Syck::LoadFile( $self->config_file );
+}
+
 
 has '_server' => (
     reader  => 'server',
