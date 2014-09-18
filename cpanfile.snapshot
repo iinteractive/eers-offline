@@ -208,6 +208,13 @@ DISTRIBUTIONS
       XSLoader 0
       strict 0
       warnings 0
+  Class-Loader-2.03
+    pathname: V/VI/VIPUL/Class-Loader-2.03.tar.gz
+    provides:
+      Class::Loader 2.03
+      Class::LoaderTest undef
+    requirements:
+      ExtUtils::MakeMaker 0
   Class-Method-Modifiers-2.10
     pathname: E/ET/ETHER/Class-Method-Modifiers-2.10.tar.gz
     provides:
@@ -270,6 +277,16 @@ DISTRIBUTIONS
       Test::Exception 0
       Test::More 0
       ok 0
+  Convert-ASCII-Armour-1.4
+    pathname: V/VI/VIPUL/Convert-ASCII-Armour-1.4.tar.gz
+    provides:
+      Convert::ASCII::Armor undef
+      Convert::ASCII::Armour 1.4
+    requirements:
+      Compress::Zlib 0
+      Digest::MD5 0
+      ExtUtils::MakeMaker 0
+      MIME::Base64 0
   Convert-ASN1-0.26
     pathname: G/GB/GBARR/Convert-ASN1-0.26.tar.gz
     provides:
@@ -294,6 +311,19 @@ DISTRIBUTIONS
       Test::Exception 0
       Test::More 0
       perl 5.008001
+  Crypt-Blowfish-2.14
+    pathname: D/DP/DPARIS/Crypt-Blowfish-2.14.tar.gz
+    provides:
+      Crypt::Blowfish 2.14
+    requirements:
+      ExtUtils::MakeMaker 0
+  Crypt-CBC-2.33
+    pathname: L/LD/LDS/Crypt-CBC-2.33.tar.gz
+    provides:
+      Crypt::CBC 2.33
+    requirements:
+      Digest::MD5 2.00
+      ExtUtils::MakeMaker 0
   Crypt-DES-2.07
     pathname: D/DP/DPARIS/Crypt-DES-2.07.tar.gz
     provides:
@@ -346,6 +376,62 @@ DISTRIBUTIONS
       IDEA 1.10
     requirements:
       ExtUtils::MakeMaker 0
+  Crypt-Primes-0.50
+    pathname: V/VI/VIPUL/Crypt-Primes-0.50.tar.gz
+    provides:
+      Crypt::Primes 0.50
+    requirements:
+      Crypt::Random 0.33
+      ExtUtils::MakeMaker 0
+      Math::Pari 2.001804
+  Crypt-RSA-1.99
+    pathname: V/VI/VIPUL/Crypt-RSA-1.99.tar.gz
+    provides:
+      Crypt::RSA 1.99
+      Crypt::RSA::DataFormat undef
+      Crypt::RSA::Debug undef
+      Crypt::RSA::ES::OAEP 1.99
+      Crypt::RSA::ES::PKCS1v15 1.99
+      Crypt::RSA::Errorhandler undef
+      Crypt::RSA::Key 1.99
+      Crypt::RSA::Key::Private 1.99
+      Crypt::RSA::Key::Private::SSH undef
+      Crypt::RSA::Key::Private::SSH::Buffer undef
+      Crypt::RSA::Key::Public 1.99
+      Crypt::RSA::Key::Public::SSH undef
+      Crypt::RSA::Primitives undef
+      Crypt::RSA::SS::PKCS1v15 1.99
+      Crypt::RSA::SS::PSS 1.99
+    requirements:
+      Class::Loader 2.00
+      Convert::ASCII::Armour 0
+      Crypt::Blowfish 0
+      Crypt::CBC 0
+      Crypt::Primes 0.38
+      Crypt::Random 0.34
+      Data::Buffer 0
+      Data::Dumper 0
+      Digest::MD2 0
+      Digest::MD5 0
+      Digest::SHA1 0
+      ExtUtils::MakeMaker 6.98
+      Math::Pari 2.001804
+      Sort::Versions 0
+      Tie::EncryptedHash 0
+  Crypt-Random-1.25
+    pathname: V/VI/VIPUL/Crypt-Random-1.25.tar.gz
+    provides:
+      Crypt::Random 1.25
+      Crypt::Random::Generator undef
+      Crypt::Random::Provider::File undef
+      Crypt::Random::Provider::devrandom undef
+      Crypt::Random::Provider::devurandom undef
+      Crypt::Random::Provider::egd undef
+      Crypt::Random::Provider::rand undef
+    requirements:
+      Class::Loader 2.00
+      ExtUtils::MakeMaker 0
+      Math::Pari 2.001804
   DBD-SQLite-1.42
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.42.tar.gz
     provides:
@@ -1679,6 +1765,15 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  Digest-BubbleBabble-0.02
+    pathname: B/BT/BTROTT/Digest-BubbleBabble-0.02.tar.gz
+    provides:
+      Digest::BubbleBabble 0.02
+    requirements:
+      ExtUtils::MakeMaker 6.42
+      Filter::Util::Call 0
+      Test::More 0
+      perl 5.008001
   Digest-HMAC-1.03
     pathname: G/GA/GAAS/Digest-HMAC-1.03.tar.gz
     provides:
@@ -1690,6 +1785,12 @@ DISTRIBUTIONS
       Digest::SHA 1
       ExtUtils::MakeMaker 0
       perl 5.004
+  Digest-MD2-2.04
+    pathname: G/GA/GAAS/Digest-MD2-2.04.tar.gz
+    provides:
+      Digest::MD2 2.04
+    requirements:
+      ExtUtils::MakeMaker 0
   Digest-SHA1-2.13
     pathname: G/GA/GAAS/Digest-SHA1-2.13.tar.gz
     provides:
@@ -2725,6 +2826,8 @@ DISTRIBUTIONS
       Crypt::DH 0.01
       Crypt::DSA 0.11
       Crypt::IDEA 0
+      Crypt::RSA 1.37
+      Digest::BubbleBabble 0.01
       Digest::HMAC_MD5 0
       Digest::HMAC_SHA1 0
       Digest::MD5 0
@@ -2953,6 +3056,15 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.006001
+  Sort-Versions-1.60
+    pathname: N/NE/NEILB/Sort-Versions-1.60.tar.gz
+    provides:
+      Sort::Versions 1.60
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 6.30
+      strict 0
+      warnings 0
   String-CRC32-1.5
     pathname: S/SO/SOENKE/String-CRC32-1.5.tar.gz
     provides:
@@ -3304,6 +3416,15 @@ DISTRIBUTIONS
       Text::Glob 0.09
     requirements:
       Test::More 0
+  Tie-EncryptedHash-1.24
+    pathname: V/VI/VIPUL/Tie-EncryptedHash-1.24.tar.gz
+    provides:
+      Tie::EncryptedHash 1.8
+    requirements:
+      Crypt::Blowfish 0
+      Crypt::CBC 0
+      Crypt::DES 0
+      ExtUtils::MakeMaker 0
   Try-Tiny-0.22
     pathname: D/DO/DOY/Try-Tiny-0.22.tar.gz
     provides:
