@@ -3,6 +3,7 @@ package EERS::Offline::Server;
 use Moose;
 
 use Data::UUID;
+use Class::Load;
 
 our $VERSION = '0.03';
 
@@ -163,7 +164,7 @@ sub _run {
 
     my $builder_class = $map->{$request->report_type}->{$request->report_format};
 
-    eval { Class::MOP::load_class($builder_class) };
+    eval { Class::Load::load_class($builder_class) };
     if ($@) {
         $self->log("Could not load builder class ($builder_class) because : $@");
         return;

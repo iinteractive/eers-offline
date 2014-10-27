@@ -8,6 +8,7 @@ use EERS::Offline::DB;
 use EERS::Offline::Config;
 use EERS::Offline::Server;
 use EERS::Offline::Client;
+use Class::Load;
 
 our $VERSION = '0.02';
 
@@ -88,7 +89,7 @@ sub _create_logger {
     return undef unless $conf->{logger};
 
     my $logger_class = 'EERS::Offline::Logger';
-    Class::MOP::load_class($logger_class);
+    Class::Load::load_class($logger_class);
 
     return $logger_class->new(
         log_file => $conf->{logger}->{log_file},
@@ -101,7 +102,7 @@ sub _create_transporter {
 
     my $type = $conf->{transporter}->{type} || 'Simple';
     my $transporter_class = 'EERS::Offline::Transporter::' . $type;
-    Class::MOP::load_class($transporter_class);
+    Class::Load::load_class($transporter_class);
 
     return $transporter_class->new(
         %{$conf->{transporter}}
