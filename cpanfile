@@ -23,6 +23,7 @@ requires "constant" => "0";
 requires "namespace::autoclean" => "0";
 requires "strict" => "0";
 requires "warnings" => "0";
+requires "Class::Load" => 0;
 
 on 'test' => sub {
   requires "Data::Dumper" => "0";
